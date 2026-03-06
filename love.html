@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إليكِ يا أغلى ما أملك ❤️</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&family=Dancing+Script:wght@700&family=Aref+Ruqaa:wght@400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .love-container {
+            max-width: 850px;
+            width: 90%;
+            padding: 3.5rem;
+            background: var(--glass-heavy);
+            backdrop-filter: blur(30px);
+            border: 1px solid var(--glass-border);
+            border-radius: 40px;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="love-container">
+        <div class="heart-main" style="font-size:5rem;">❤️</div>
+        <div style="font-family:'Dancing Script', cursive; font-size:4.5rem; color:#ff4d6d; margin-bottom:20px;">To My
+            Queen</div>
+        <div id="typewriter"
+            style="font-family:'Aref Ruqaa', serif; font-size:2.5rem; line-height:1.8; color:#fff; min-height:200px;">
+        </div>
+        <div id="signature"
+            style="font-style:italic; font-size:1.8rem; color:#ffb3c1; margin-top:2rem; opacity:0; transition:opacity 1s;">
+            أحبكِ دائماً وأبداً.. ❤️</div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        const messageText = `شكراً لأنكِ كنتِ هنا معي في كل لحظة..
+أنتِ لستِ مجرد شخص في حياتي، أنتِ هي حياتي.
+بكل نبضة في قلبي، وبكل حرف في هذا الموقع..
+أنا أحبكِ أكثر مما يمكن للكلمات أن تصف.`;
+
+        const typewriterElement = document.getElementById('typewriter');
+        const signatureElement = document.getElementById('signature');
+        let index = 0;
+
+        function typeWriter() {
+            if (index < messageText.length) {
+                const char = messageText.charAt(index);
+                typewriterElement.innerHTML += char === '\n' ? '<br>' : char;
+                index++;
+                setTimeout(typeWriter, Math.random() * 50 + 50);
+            } else {
+                signatureElement.style.opacity = '1';
+            }
+        }
+        setTimeout(typeWriter, 1500);
+    </script>
+</body>
+
+</html>

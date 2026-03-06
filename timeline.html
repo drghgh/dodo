@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حكايتنا في أرقام ❤️</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Outfit:wght@400;700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            display: block;
+            padding: 40px 0;
+            overflow-x: hidden;
+        }
+
+        .timer-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            max-width: 600px;
+            margin: 40px auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        @media (min-width: 600px) {
+            .timer-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        .timer-card {
+            background: var(--glass-heavy);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 30px 15px;
+            text-align: center;
+        }
+
+        .timer-val {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 900;
+            line-height: 1;
+            color: #fff;
+            background: linear-gradient(to bottom, #fff, #ff85a1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .pro-gift-box {
+            background: var(--glass-heavy);
+            border: 2px solid var(--glass-border);
+            border-radius: 35px;
+            padding: 50px 30px;
+            margin: 60px auto;
+            max-width: 700px;
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+            z-index: 10;
+            transition: 0.3s;
+        }
+
+        .pro-gift-box:hover {
+            transform: scale(1.02);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            .timer-val {
+                font-size: 2.2rem;
+            }
+
+            .timer-card {
+                padding: 20px 10px;
+            }
+
+            h1 {
+                font-size: 2.2rem !important;
+            }
+
+            #giftIcon {
+                font-size: 3rem !important;
+            }
+
+            #quoteDisplay {
+                font-size: 1.2rem !important;
+            }
+
+            .pro-gift-box {
+                padding: 30px 15px;
+                border-radius: 20px;
+                margin: 40px auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="glass-container"
+        style="max-width: 900px; padding: 3rem; display: block; margin: 0 auto; background: transparent; box-shadow: none; border: none;">
+        <div class="heart-main">✨</div>
+        <h1 style="font-size: 3rem; margin-bottom: 10px;">حكايتنا بالأرقام ❤️</h1>
+        <p style="color: #ffb3c1; font-size: 1.2rem;">كل تكة في الساعة هي نبضة في قلبي ليكي..</p>
+
+        <div class="timer-grid">
+            <div class="timer-card"><span class="timer-val" id="days">0</span><br><span
+                    style="color:#ffb3c1;">يوم</span></div>
+            <div class="timer-card"><span class="timer-val" id="hours">0</span><br><span
+                    style="color:#ffb3c1;">ساعة</span></div>
+            <div class="timer-card"><span class="timer-val" id="minutes">0</span><br><span
+                    style="color:#ffb3c1;">دقيقة</span></div>
+            <div class="timer-card"><span class="timer-val" id="seconds">0</span><br><span
+                    style="color:#ffb3c1;">ثانية</span></div>
+        </div>
+
+        <div class="pro-gift-box" onclick="generateQuote()" id="giftBox">
+            <div style="font-size: 4rem; animation: bounce 2s infinite ease-in-out;" id="giftIcon">🎁</div>
+            <div id="quoteDisplay" style="margin-top:20px; font-size:1.5rem; font-weight:700; color:white;">اضغطي هنا
+                عشان تشوفي مفاجأة ليكي.. ✨</div>
+        </div>
+
+        <button onclick="window.location.href='milestones.html'"
+            style="margin: 40px auto; max-width: 400px; display: block;">المحطات اللي عدينا عليها.. ❤️</button>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        const startDate = new Date('2026-02-04T00:00:19');
+        function updateTimer() {
+            const now = new Date();
+            const diff = Math.max(0, now - startDate);
+            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            const m = Math.floor((diff / (1000 * 60)) % 60);
+            const s = Math.floor((diff / 1000) % 60);
+            document.getElementById('days').innerText = d;
+            document.getElementById('hours').innerText = h;
+            document.getElementById('minutes').innerText = m;
+            document.getElementById('seconds').innerText = s;
+        }
+        setInterval(updateTimer, 1000);
+        updateTimer();
+
+        const quotes = ["أنتِ النبض اللي بيحيي قلبي كل يوم.. ❤️", "30 يوم معاكي كأنهم أجمل حلم في حياتي 😍", "وجودك في عالمي هو أحلى حاجة حصلتلي 🌸", "كل ثانية بتمر وإحنا سوا هي العمر الحقيقي ليا ✨", "أنتِ دنيتي وكل اللي ليا في الدنيا دي 👑", "حبي ليكي ملوش حدود ولا بيخلص أبداً ❤️", "أنتِ النور اللي بيطلع في حياتي كل يوم 🌙", "شكراً بجد إنك اخترتي تكوني معايا 😍", "عاشق ليكي ولتفاصيلك ولكل حاجة فيكي 🌹", "أنتِ ملكتي وست البنات كلهم 💫"];
+        function generateQuote() {
+            const display = document.getElementById('quoteDisplay');
+            const icon = document.getElementById('giftIcon');
+            const randomIndex = Math.floor(Math.random() * quotes.length);
+            icon.innerText = '💖';
+            display.innerText = quotes[randomIndex];
+        }
+    </script>
+</body>
+
+</html>

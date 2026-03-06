@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>❤️ في حب أم ميرا</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Cairo:wght@400;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="glass-container">
+        <div class="heart-main">❤️</div>
+        <h1>❤️ في حب أم ميرا</h1>
+        <p>أهلاً بكِ في عالمنا الخاص.. <br>من فضلكِ أدخلي تاريخ ميلادكِ للدخول</p>
+
+        <form id="loginForm">
+            <div class="input-container">
+                <input type="date" id="birthdate" required placeholder="تاريخ الميلاد">
+            </div>
+            <button type="submit">دخول إلى عالمنا 😍</button>
+        </form>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const birthdate = document.getElementById('birthdate').value;
+            const correctDate = localStorage.getItem('romantic_birthdate') || '2010-02-10';
+
+            if (birthdate === correctDate) {
+                document.querySelector('.glass-container').style.transform = 'scale(0.9) translateY(20px)';
+                document.querySelector('.glass-container').style.opacity = '0';
+                document.querySelector('.glass-container').style.transition = 'all 0.6s ease-in';
+                setTimeout(() => {
+                    sessionStorage.setItem('isLoggedIn', 'true');
+                    window.location.href = 'gallery.html';
+                }, 600);
+            } else {
+                const error = document.getElementById('errorMsg');
+                error.style.display = 'block';
+                error.style.animation = 'none';
+                error.offsetHeight;
+                error.style.animation = null;
+            }
+        });
+    </script>
+</body>
+
+</html>

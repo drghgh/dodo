@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>جاوبي بصراحة ❤️</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            display: block;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .questions-wrapper {
+            max-width: 800px;
+            margin: 60px auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 6px;
+            background: var(--primary);
+            width: 0%;
+            z-index: 1000;
+            box-shadow: 0 0 15px var(--primary);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="questions-wrapper">
+        <div class="header-section">
+            <div class="heart-main">✍️</div>
+            <h1>جاوبي من قلبك ❤️</h1>
+            <p>كل إجابة هي ذكرى تزيدنا قرباً..</p>
+        </div>
+
+        <form id="quizForm">
+            <div class="question-card"><span style="color:var(--primary-light); font-weight:700;">01/10</span><br><label
+                    style="font-size:1.4rem; color:white; font-weight:700;">اسمي أي على تلفونك؟</label><input
+                    type="text" name="q1" required style="margin-top:15px;"></div>
+            <div class="question-card"><span style="color:var(--primary-light); font-weight:700;">02/10</span><br><label
+                    style="font-size:1.4rem; color:white; font-weight:700;">اسم بتحبي تناديني بيه؟</label><input
+                    type="text" name="q2" required style="margin-top:15px;"></div>
+            <div class="question-card"><span style="color:var(--primary-light); font-weight:700;">03/10</span><br><label
+                    style="font-size:1.4rem; color:white; font-weight:700;">نعرف بعض بقالنا قد إيه؟</label><input
+                    type="text" name="q3" required style="margin-top:15px;"></div>
+            <div class="question-card"><span style="color:var(--primary-light); font-weight:700;">04/10</span><br><label
+                    style="font-size:1.4rem; color:white; font-weight:700;">حاجه بتحبيها في شكلي؟</label><input
+                    type="text" name="q4" required style="margin-top:15px;"></div>
+            <div class="question-card"><span style="color:var(--primary-light); font-weight:700;">05/10</span><br><label
+                    style="font-size:1.4rem; color:white; font-weight:700;">حاجه بتحبيها في طبعي؟</label><input
+                    type="text" name="q5" required style="margin-top:15px;"></div>
+            <div class="question-card"><span style="color:var(--primary-light); font-weight:700;">06/10</span><br><label
+                    style="font-size:1.4rem; color:white; font-weight:700;">أكتر صفة بتصنفيني بيها؟</label><input
+                    type="text" name="q6" required style="margin-top:15px;"></div>
+            <div class="question-card"><span style="color:var(--primary-light); font-weight:700;">07/10</span><br><label
+                    style="font-size:1.4rem; color:white; font-weight:700;">أول انطباع خدتيه عني؟</label><input
+                    type="text" name="q7" required style="margin-top:15px;"></div>
+            <div class="question-card"><span style="color:var(--primary-light); font-weight:700;">08/10</span><br><label
+                    style="font-size:1.4rem; color:white; font-weight:700;">حاجه نفسك تقوليها لي؟</label><textarea
+                    name="q8" required style="margin-top:15px;"></textarea></div>
+            <div class="question-card"><span style="color:var(--primary-light); font-weight:700;">09/10</span><br><label
+                    style="font-size:1.4rem; color:white; font-weight:700;">انصحيني نصيحة من قلبك؟</label><textarea
+                    name="q9" required style="margin-top:15px;"></textarea></div>
+            <div class="question-card"><span style="color:var(--primary-light); font-weight:700;">10/10</span><br><label
+                    style="font-size:1.4rem; color:white; font-weight:700;">ادعيلي دعوة من قلبك؟</label><textarea
+                    name="q10" required style="margin-top:15px;"></textarea></div>
+
+            <button type="submit" id="submitBtn">إرسال لقلبي ❤️</button>
+        </form>
+    </div>
+
+    <script src="app.js"></script>
+    <script type="module">
+        import { db } from './firebase-config.js';
+        import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const cards = document.querySelectorAll('.question-card');
+        const progressBar = document.getElementById('progressBar');
+        const submitBtn = document.getElementById('submitBtn');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('reveal');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        cards.forEach(card => observer.observe(card));
+
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            progressBar.style.width = scrolled + "%";
+        });
+
+        document.getElementById('quizForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            submitBtn.innerHTML = 'جاري الإرسال لقلبه... ❤️';
+            submitBtn.disabled = true;
+
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+            data.createdAt = serverTimestamp();
+
+            try {
+                await addDoc(collection(db, "responses"), data);
+                setTimeout(() => { window.location.href = 'wish.html'; }, 1000);
+            } catch (error) {
+                console.error("Error adding document: ", error);
+                alert("حدث خطأ أثناء الإرسال، تأكد من إعدادات Firebase");
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'إرسال لقلبي ❤️';
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - Admin</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            display: block;
+            padding: 20px;
+        }
+
+        .glass-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+            text-align: right;
+        }
+
+        .response-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            text-align: right;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .q-row {
+            margin-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 4px;
+        }
+
+        .q-label {
+            font-weight: bold;
+            color: var(--primary-light);
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            color: white;
+            cursor: pointer;
+            border-radius: 8px;
+            margin-left: 10px;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- شاشة تسجيل الدخول للوحة التحكم -->
+    <div class="glass-container" id="adminLoginScreen"
+        style="max-width: 400px; text-align: center; margin: 100px auto;">
+        <div class="heart-main">🔐</div>
+        <h1>تسجيل دخول الإدارة</h1>
+        <p style="opacity: 0.8; margin-bottom: 20px;">الرجاء إدخال بيانات الدخول السرية للمدير</p>
+        <div class="input-group">
+            <input type="email" id="adminEmail" placeholder="البريد الإلكتروني"
+                style="text-align: center; margin-bottom: 15px;">
+            <input type="password" id="adminPassword" placeholder="كلمة المرور"
+                style="text-align: center; margin-bottom: 15px;">
+            <button onclick="checkAdminLogin()">دخول للوحة التحكم</button>
+            <p id="adminErrorMsg"
+                style="color: #ff4d6d; margin-top: 15px; display: none; font-size: 0.9rem; font-weight: bold;">البيانات
+                المُدخلة غير صحيحة!</p>
+        </div>
+    </div>
+
+    <!-- محتوى لوحة التحكم (مخفي في البداية) -->
+    <div class="glass-container" id="adminDashboardContent" style="display: none;">
+        <h1>لوحة التحكم - استلام الحب ❤️</h1>
+
+        <div style="margin-bottom: 30px;">
+            <button class="tab-btn active" onclick="showTab('responses')">الإجابات</button>
+            <button class="tab-btn" onclick="showTab('wishes')">الأمنيات</button>
+            <button class="tab-btn" onclick="showTab('photos')">إدارة الصور 📸</button>
+            <button class="tab-btn" onclick="showTab('settings')">الإعدادات</button>
+        </div>
+
+        <!-- Responses Tab -->
+        <div id="responsesTab">
+            <h2>إجابات الأسئلة ✍️</h2>
+            <div id="responsesList">
+                <p>جاري التحميل...</p>
+            </div>
+        </div>
+
+        <!-- Wishes Tab -->
+        <div id="wishesTab" style="display:none;">
+            <h2>أمنيات المستقبل ✨</h2>
+            <div id="wishesList">
+                <p>جاري التحميل...</p>
+            </div>
+        </div>
+
+        <!-- Photos Upload Tab -->
+        <div id="photosTab" style="display:none;">
+            <h2>إضافة صور لذكرياتنا 📸</h2>
+            <div class="input-group"
+                style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+                <p style="margin-bottom: 15px; opacity: 0.8;">اختار الصور وقم بتسمية المجموعة (مثال: خطوبتنا، عيد الحب،
+                    ذكريات 2023)</p>
+                <input type="text" id="albumNameInput" placeholder="اسم المجموعة (اختياري، مثلاً: خطوبتنا)"
+                    style="margin-bottom: 15px; text-align: right; width: 100%; border: 1px dashed var(--primary-light); background: rgba(255,255,255,0.05);">
+
+                <input type="file" id="photoInput" multiple accept="image/*"
+                    style="background: transparent; border: 1px dashed var(--primary-light); padding: 30px; cursor: pointer; color: white;">
+                <button id="uploadPhotosBtn" style="margin-top: 15px;">رفع الصور إلى المجموعة ☁️</button>
+                <div id="uploadStatus" style="margin-top: 15px; font-weight: bold; color: var(--primary-light);"></div>
+            </div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div id="settingsTab" style="display:none;">
+            <h2>إعدادات الموقع ⚙️</h2>
+            <div class="input-group">
+                <label>تغيير تاريخ الميلاد (كلمة السر)</label>
+                <input type="date" id="newDate">
+                <button onclick="saveNewDate()">حفظ</button>
+            </div>
+            <div class="input-group" style="margin-top: 20px;">
+                <label>بداية حكايتنا (للعداد)</label>
+                <input type="date" id="startDate">
+                <button onclick="saveStartDate()">حفظ</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { db, storage, auth } from './firebase-config.js';
+        import { collection, getDocs, orderBy, query, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+        import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        // Tab Switching
+        window.showTab = (tabName) => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+
+            ['responsesTab', 'wishesTab', 'photosTab', 'settingsTab'].forEach(t => document.getElementById(t).style.display = 'none');
+            document.getElementById(tabName + 'Tab').style.display = 'block';
+
+            if (tabName === 'responses') loadResponses();
+            if (tabName === 'wishes') loadWishes();
+        };
+
+        async function loadResponses() {
+            const list = document.getElementById('responsesList');
+            try {
+                const q = query(collection(db, "responses"), orderBy("createdAt", "desc"));
+                const querySnapshot = await getDocs(q);
+                if (querySnapshot.empty) {
+                    list.innerHTML = "<p>لا توجد إجابات بعد..</p>";
+                    return;
+                }
+                list.innerHTML = querySnapshot.docs.map(doc => {
+                    const res = doc.data();
+                    const date = res.createdAt?.toDate().toLocaleString('ar-EG') || "توقيت غير معروف";
+                    return `
+                        <div class="response-card">
+                            <div style="font-size: 0.8rem; opacity: 0.6; margin-bottom: 10px;">📅 الموعد: ${date}</div>
+                            ${Object.keys(res).filter(k => k.startsWith('q')).sort().map(k => `
+                                <div class="q-row"><span class="q-label">${k.replace('q', '')}:</span> ${res[k]}</div>
+                            `).join('')}
+                        </div>
+                    `;
+                }).join('');
+            } catch (error) {
+                list.innerHTML = "<p>تأكد من إعدادات الـ Firebase Database (Firestore قواعد البيانات)</p>";
+            }
+        }
+
+        async function loadWishes() {
+            const list = document.getElementById('wishesList');
+            try {
+                const q = query(collection(db, "wishes"), orderBy("createdAt", "desc"));
+                const querySnapshot = await getDocs(q);
+                if (querySnapshot.empty) {
+                    list.innerHTML = "<p>لا توجد أمنيات بعد..</p>";
+                    return;
+                }
+                list.innerHTML = querySnapshot.docs.map(doc => {
+                    const wish = doc.data();
+                    const date = wish.createdAt?.toDate().toLocaleString('ar-EG') || "توقيت غير معروف";
+                    return `
+                        <div class="response-card" style="border-left: 4px solid var(--primary);">
+                            <div style="font-size: 0.8rem; opacity: 0.6;">📅 التاريخ: ${date}</div>
+                            <p style="margin: 10px 0; font-size: 1.2rem;">${wish.content}</p>
+                        </div>
+                    `;
+                }).join('');
+            } catch (error) {
+                list.innerHTML = "<p>خطأ في تحميل الأمنيات</p>";
+            }
+        }
+
+        // Photo Upload Logic
+        document.getElementById('uploadPhotosBtn').addEventListener('click', async () => {
+            const files = document.getElementById('photoInput').files;
+            let albumName = document.getElementById('albumNameInput').value.trim();
+            const statusDiv = document.getElementById('uploadStatus');
+
+            if (files.length === 0) {
+                statusDiv.innerText = 'الرجاء اختيار صورة على الأقل!';
+                return;
+            }
+
+            // Default to 'General' if no album name is provided
+            if (!albumName) albumName = "ذكريات عامة";
+
+            statusDiv.innerText = `جاري رفع ${files.length} صورة إلى مجموعة "${albumName}"... الرجاء الانتظار`;
+            let uploadCount = 0;
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                // Use the album name as the folder in Firebase Storage
+                const storageRef = ref(storage, `${albumName}/` + Date.now() + '_' + file.name);
+                const uploadTask = uploadBytesResumable(storageRef, file);
+
+                uploadTask.on('state_changed',
+                    (snapshot) => {
+                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        statusDiv.innerText = `جاري رفع الصورة ${i + 1} من ${files.length}... (${Math.round(progress)}%)`;
+                    },
+                    (error) => {
+                        console.error("Upload Error:", error);
+                        statusDiv.innerText += `\nخطأ في رفع الصورة ${i + 1}`;
+                    },
+                    async () => {
+                        try {
+                            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                            // Save URL and associated Album Name to Firestore
+                            await addDoc(collection(db, "gallery_images"), {
+                                url: downloadURL,
+                                album: albumName,
+                                createdAt: serverTimestamp()
+                            });
+                            uploadCount++;
+                            if (uploadCount === files.length) {
+                                statusDiv.innerText = 'تم رفع جميع الصور بنجاح! 🎉 يمكنك رؤيتها الآن في صفحة الصور.';
+                                document.getElementById('photoInput').value = ''; // Reset input
+                            }
+                        } catch (e) {
+                            console.error("Firestore Error:", e);
+                        }
+                    }
+                );
+            }
+        });
+
+        // Admin Login Logic
+        window.checkAdminLogin = async () => {
+            const email = document.getElementById('adminEmail').value.trim();
+            const pass = document.getElementById('adminPassword').value.trim();
+            const errorMsg = document.getElementById('adminErrorMsg');
+            const submitBtn = document.querySelector('#adminLoginScreen button');
+
+            if (!email || !pass) {
+                errorMsg.innerText = "الرجاء إدخال البريد الإلكتروني وكلمة المرور!";
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            submitBtn.innerText = 'جاري التحقق... ⏳';
+            submitBtn.disabled = true;
+
+            try {
+                // استخدام Firebase Auth للتحقق من بيانات الدخول
+                await signInWithEmailAndPassword(auth, email, pass);
+
+                document.getElementById('adminLoginScreen').style.display = 'none';
+                document.getElementById('adminDashboardContent').style.display = 'block';
+                errorMsg.style.display = 'none';
+
+                // Initial Load ONLY after successful login
+                loadResponses();
+            } catch (error) {
+                console.error("Login Error:", error);
+                errorMsg.innerText = "البيانات المُدخلة غير صحيحة أو ليس لديك صلاحية!";
+                errorMsg.style.display = 'block';
+                document.getElementById('adminPassword').value = '';
+            } finally {
+                submitBtn.innerText = 'دخول للوحة التحكم';
+                submitBtn.disabled = false;
+            }
+        };
+
+        window.saveNewDate = () => {
+            const date = document.getElementById('newDate').value;
+            if (date) { localStorage.setItem('romantic_birthdate', date); alert('تم الحفظ!'); }
+        };
+        window.saveStartDate = () => {
+            const date = document.getElementById('startDate').value;
+            if (date) { localStorage.setItem('romantic_start_date', date); alert('تم الحفظ!'); }
+        };
+    </script>
+</body>
+
+</html>

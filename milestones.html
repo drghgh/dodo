@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محطات حكايتنا ❤️</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            display: block;
+            padding: 40px 20px;
+            overflow-x: hidden;
+        }
+
+        .timeline-wrapper {
+            max-width: 800px;
+            margin: 60px auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* The vertical line */
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            z-index: 0;
+        }
+
+        .milestone-item {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 60px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .milestone-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .milestone-dot {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 24px;
+            background: var(--primary);
+            border: 4px solid #1e1b4b;
+            border-radius: 50%;
+            box-shadow: 0 0 15px var(--primary);
+            z-index: 2;
+        }
+
+        .milestone-content {
+            width: 45%;
+            background: var(--glass-heavy);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            transition: 0.4s;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .milestone-item.reveal .milestone-content {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .milestone-content:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-light);
+        }
+
+        .milestone-date {
+            display: block;
+            font-weight: 900;
+            color: var(--primary-light);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .milestone-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .milestone-img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-top: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Mobile Adjustments for Timeline (RTL) */
+        @media (max-width: 768px) {
+            .timeline-line {
+                left: auto;
+                right: 20px;
+                transform: none;
+            }
+
+            .milestone-dot {
+                left: auto;
+                right: 20px;
+                transform: translateX(50%);
+            }
+
+            .milestone-item,
+            .milestone-item:nth-child(even) {
+                flex-direction: row;
+                justify-content: flex-end;
+            }
+
+            .milestone-content {
+                width: 85%;
+            }
+
+            .milestone-title {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header-glow">
+        <div class="heart-main">🛤️</div>
+        <h1>محطات عدينا عليها سوا ❤️</h1>
+        <p>كل خطوة كانت معاكي هي بداية لقصة جديدة..</p>
+    </div>
+
+    <div class="timeline-wrapper">
+        <div class="timeline-line"></div>
+
+        <div class="milestone-item">
+            <div class="milestone-dot"></div>
+            <div class="milestone-content">
+                <span class="milestone-date">3 فبراير2026 </span>
+                <div class="milestone-title">أول كلمة بيننا 😍</div>
+                <p>هنا كانت البداية.. اليوم اللي حياتي اتغيرت فيه للأبد.</p>
+                <img src="https://picsum.photos/400/300?random=11" class="milestone-img">
+            </div>
+        </div>
+
+        <div class="milestone-item">
+            <div class="milestone-dot"></div>
+            <div class="milestone-content">
+                <span class="milestone-date">10 فبراير 2026</span>
+                <div class="milestone-title">أول خروجة سوا ❤️</div>
+                <p>اليوم اللي عيني مشفتش فيه غيرك، والوقت وقف بينا.</p>
+                <img src="https://picsum.photos/400/300?random=12" class="milestone-img">
+            </div>
+        </div>
+
+    </div>
+
+    <button onclick="window.location.href='questions.html'"
+        style="margin: 40px auto; max-width: 400px; display: block;">جاوبي على أسئلتي؟ 😍</button>
+
+    <script src="app.js"></script>
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('reveal');
+                }
+            });
+        }, { threshold: 0.2 });
+
+        document.querySelectorAll('.milestone-item').forEach(item => {
+            observer.observe(item);
+        });
+    </script>
+</body>
+
+</html>
